@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> picked = new ArrayList<>();
     private ArrayList<Integer> count = new ArrayList<>();
     private ArrayList<String> unpicked = new ArrayList<>();
+    private ArrayList<Long> TimeArray = new ArrayList<>();
+    long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 openUncalledLog();
             }
         });
+
         //Date Time Code
         TextView textView;
         textView = findViewById(R.id.textView);
@@ -51,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(dateTime);
 
 
+        //TimeStuff
+        // 2nd time - 1st time <= 2,400,000
+        // counter = 2 in call log
+        // get random -> name of student -> if picked.contains(name)...go through picked arraylist and find index of name...check count at index value
+        // if count(index) == && time diff > 40
+        // picked[] -> random -> name -> if picked(contains) then count + 1 -> else add name to pick and then count = 1
 
         //Get Random Image
         ImageView imageView;
@@ -136,18 +145,27 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //shows the random image
                 int pickedImage = r.nextInt(images.length);
-                imageView.setImageResource(images[pickedImage]);
-                student_name.setText(names.get(pickedImage));
+                time = System.currentTimeMillis();
                 if (picked.contains(names.get(pickedImage))) {
+                    int index = picked.indexOf(names.get(pickedImage));
+                    while((count.get(index) == 2 && (time - TimeArray.get(index)) <= 2400000)) {
+                        pickedImage = r.nextInt(images.length);
+                        if (picked.contains(names.get(pickedImage))) {
+                            index = picked.indexOf(names.get(pickedImage));
+                        }
+                    }
                     count.set(picked.indexOf(names.get(pickedImage)), count.get(picked.indexOf(names.get(pickedImage))) + 1);
                 }
                 else {
                     count.add(1);
+                    TimeArray.add(time);
                     picked.add(names.get(pickedImage));
                 }
                 if (unpicked.contains(names.get(pickedImage))) {
                     unpicked.remove(unpicked.indexOf(names.get(pickedImage)));
                 }
+                imageView.setImageResource(images[pickedImage]);
+                student_name.setText(names.get(pickedImage));
             }
         });
 
